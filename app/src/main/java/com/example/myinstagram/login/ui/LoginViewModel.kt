@@ -7,11 +7,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myinstagram.login.domain.LoginUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LoginViewModel:ViewModel() {
-    val loginUseCase = LoginUseCase()
-
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val loginUseCase: LoginUseCase
+) :ViewModel() {
     private val _email = MutableLiveData<String>()
     val email: LiveData<String> = _email
 
@@ -30,7 +33,7 @@ class LoginViewModel:ViewModel() {
         _isLoginEnable.value = enableLogin(email,password)
     }
 
-    fun enableLogin(email: String, password: String): Boolean {
+    private fun enableLogin(email: String, password: String): Boolean {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches() &&
                 password.length > 6
     }
